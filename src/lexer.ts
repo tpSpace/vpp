@@ -7,8 +7,8 @@ export enum TokenType {
     Equals,
     OpenParen,
     CloseParen,
-    Let,
     BinaryOperator,
+    Let,
     EOF
 }
 
@@ -26,11 +26,13 @@ function isAlpha(src: string): boolean {
 }
 
 function isSkippable(str: string) {
-    return str == ' ' || str == '\n' || '\t';
+    return str == " " || str == "\n" || str == "\t"; 
 }
 
-function isInt (src: string): boolean {
-    return !isNaN(parseInt(src));
+function isInt (str: string): boolean {
+    const c = str.charCodeAt(0);
+	const bounds = ["0".charCodeAt(0), "9".charCodeAt(0)];
+	return c >= bounds[0] && c <= bounds[1];
 }
 
 function token (value: string,type: TokenType): Token {
@@ -51,6 +53,8 @@ export function tokenize (source: string): Token[] {
             tokens.push(token(src.shift()!, TokenType.BinaryOperator));
         } else if (src[0] === '=') {
             tokens.push(token(src.shift()!, TokenType.Equals));
+        } else if (src[0] === ';') {
+            tokens.push(token(src.shift()!, TokenType.EOF));
         } else {
             // Handle multi character tokens
             if (isInt(src[0])) {
@@ -75,9 +79,9 @@ export function tokenize (source: string): Token[] {
                 src.shift();
             } else {
                 console.log("Hong tìm thấy từ này ní ơi: ", src[0]);
-                // Deno.exit(1);
+                process.exit();
             }
-        }
+        } 
     }
 
     return tokens;

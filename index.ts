@@ -1,6 +1,10 @@
-import { tokenize } from './lexer';
+import { tokenize } from './src/lexer';
 
-const src = "bien a = 10"
+
+const path = './test.vpp'
+const file = Bun.file(path);
+const src = await file.text()
+
 for (let token of tokenize(src)) {
     console.log(token);
 }
