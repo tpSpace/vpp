@@ -9,7 +9,12 @@ export enum TokenType {
     CloseParen,
     Let,
     BinaryOperator,
+    EOF
 }
+
+const KEYWORDS: Record<string, TokenType> = {
+    "bien" : TokenType.Let,
+} 
 
 export interface Token {
     value: string;
@@ -18,6 +23,10 @@ export interface Token {
 
 function isAlpha(src: string): boolean {
     return src.toUpperCase() !== src.toLowerCase();
+}
+
+function isSkippable(str: string) {
+    return str == ' ' || str == '\n' || '\t';
 }
 
 function isInt (src: string): boolean {
@@ -45,7 +54,28 @@ export function tokenize (source: string): Token[] {
         } else {
             // Handle multi character tokens
             if (isInt(src[0])) {
-                
+                let num = '';
+                while (src.length > 0 && isInt(src[0])) {
+                    num += src.shift();
+                }
+                tokens.push(token(num, TokenType.Number));
+            } else if (isAlpha(src[0])) {
+                let ident = '';
+                while (src.length > 0 && isAlpha(src[0])) {
+                    ident += src.shift();
+                }
+                // Check for resersed keywords
+                const reserved = KEYWORDS[ident];
+                if (reserved === undefined ) {
+                    tokens.push(token(ident, TokenType.Identifier));
+                } else {
+                    tokens.push(token(ident, reserved)); // TokenType.Let 
+                }
+            } else if (isSkippable(src[0])) {
+                src.shift();
+            } else {
+                console.log("Hong tìm thấy từ này ní ơi: ", src[0]);
+                // Deno.exit(1);
             }
         }
     }
