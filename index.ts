@@ -9,7 +9,7 @@ async function repl() {
             process.exit();
         }
         const program = parser.produceAST(input);
-        console.log(program);
+        console.log(JSON.stringify(program));
     }
 
 }
