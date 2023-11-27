@@ -1,10 +1,17 @@
-import { tokenize } from './src/lexer';
+import Parser from './src/parser.ts';
 
+async function repl() {
+    const parser = new Parser();
 
-const path = './test.vpp'
-const file = Bun.file(path);
-const src = await file.text()
+    while (true) {
+        const input = prompt("> nói gì đi ní: ");
+        if (!input || input.includes("exit")) {
+            process.exit();
+        }
+        const program = parser.produceAST(input);
+        console.log(program);
+    }
 
-for (let token of tokenize(src)) {
-    console.log(token);
 }
+
+repl();

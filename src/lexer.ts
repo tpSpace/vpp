@@ -9,6 +9,7 @@ export enum TokenType {
     CloseParen,
     BinaryOperator,
     Let,
+    SEMICOLON,
     EOF
 }
 
@@ -54,7 +55,7 @@ export function tokenize (source: string): Token[] {
         } else if (src[0] === '=') {
             tokens.push(token(src.shift()!, TokenType.Equals));
         } else if (src[0] === ';') {
-            tokens.push(token(src.shift()!, TokenType.EOF));
+            tokens.push(token(src.shift()!, TokenType.SEMICOLON));
         } else {
             // Handle multi character tokens
             if (isInt(src[0])) {
@@ -82,7 +83,7 @@ export function tokenize (source: string): Token[] {
                 process.exit();
             }
         } 
-    }
-
+    }// :( where have you been? 
+    tokens.push({type: TokenType.EOF, value: "EndOfFile"})
     return tokens;
 }
