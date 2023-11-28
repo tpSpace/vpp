@@ -1,4 +1,4 @@
-import Parser from './src/parser.ts';
+import Parser from './src/frontend/parser.ts';
 
 async function repl() {
     const parser = new Parser();
