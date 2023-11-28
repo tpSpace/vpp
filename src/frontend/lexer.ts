@@ -1,7 +1,9 @@
 // let x  = 45 
 // let's make a lexer
+// lexer is a program that take a string of code as an input and tokenize the string.
 
 export enum TokenType {
+    Null,
     Number,
     Identifier,
     Equals,
@@ -15,6 +17,7 @@ export enum TokenType {
 
 const KEYWORDS: Record<string, TokenType> = {
     "bien" : TokenType.Let,
+    "rong" : TokenType.Null
 } 
 
 export interface Token {
@@ -22,14 +25,17 @@ export interface Token {
     type: TokenType;
 }
 
+// check whether the given string belongs to alphabet.
 function isAlpha(src: string): boolean {
     return src.toUpperCase() !== src.toLowerCase();
 }
 
+// skip space or newline or tabs
 function isSkippable(str: string) {
     return str == " " || str == "\n" || str == "\t"; 
 }
 
+// check if the given string is a number or not
 function isInt (str: string): boolean {
     const c = str.charCodeAt(0);
 	const bounds = ["0".charCodeAt(0), "9".charCodeAt(0)];
@@ -39,7 +45,7 @@ function isInt (str: string): boolean {
 function token (value: string,type: TokenType): Token {
     return {value, type};
 }
-
+// tokenize the string of code
 export function tokenize (source: string): Token[] {
     const tokens = new Array<Token>();
     const src = source.split('');
@@ -71,7 +77,7 @@ export function tokenize (source: string): Token[] {
                 }
                 // Check for resersed keywords
                 const reserved = KEYWORDS[ident];
-                if (reserved === undefined ) {
+                if (typeof reserved === "number" ) {
                     tokens.push(token(ident, TokenType.Identifier));
                 } else {
                     tokens.push(token(ident, reserved)); // TokenType.Let 
