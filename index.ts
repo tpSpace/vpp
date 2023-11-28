@@ -4,7 +4,7 @@ async function repl() {
     const parser = new Parser();
 
     while (true) {
-        const input = prompt("> nói gì đi ní: ");
+        const input = prompt("> nói gì đi ní:");
         if (!input || input.includes("exit")) {
             process.exit();
         }

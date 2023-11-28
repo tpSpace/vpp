@@ -50,7 +50,7 @@ export function tokenize (source: string): Token[] {
             tokens.push(token(src.shift()!, TokenType.OpenParen));
         } else if (src[0] === ')') {
             tokens.push(token(src.shift()!, TokenType.CloseParen));
-        } else if (src[0] === '+' || src[0] === '-' || src[0] === '*' || src[0] === '/') {
+        } else if (src[0] === '+' || src[0] === '-' || src[0] === '*' || src[0] === '/' || src[0] === '%') {
             tokens.push(token(src.shift()!, TokenType.BinaryOperator));
         } else if (src[0] === '=') {
             tokens.push(token(src.shift()!, TokenType.Equals));

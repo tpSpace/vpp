@@ -8,6 +8,13 @@ export default class Parser {
         return this.tokens[0].type != TokenType.EOF ;
     }
 
+    private expect(type: TokenType, err: any) {
+        const prev = this.tokens.shift() as Token;
+        if (!prev || prev.type !== type) {
+            console.error(err);
+        }
+    }
+
     private eat() {
         const prev = this.tokens.shift() as Token; 
         return prev;
@@ -26,9 +33,26 @@ export default class Parser {
     }
 
     private parse_additive_expr(): Expr {
-        let left = this.parse_primary_expr();
+        let left = this.parse_multiplicative_expr();
 
         while (this.at().value === "+" || this.at().value === "-") {
+            const operator = this.eat().value;
+            const right = this.parse_multiplicative_expr();
+            left = {
+                kind: "BinaryExpr",
+                left, 
+                right,
+                operator,
+            } as BinaryExpr;
+            // console.log(left, "\n===================");
+        }
+        return left;
+    }
+
+    private parse_multiplicative_expr(): Expr {
+        let left = this.parse_primary_expr();
+
+        while (this.at().value === "*" || this.at().value === "/" || this.at().value === "%") {
             const operator = this.eat().value;
             const right = this.parse_primary_expr();
             left = {
@@ -39,7 +63,6 @@ export default class Parser {
             } as BinaryExpr;
             // console.log(left, "\n===================");
         }
-        
         return left;
     }
 
@@ -51,6 +74,12 @@ export default class Parser {
                 return { kind: "Identifier", symbol: this.eat().value } as Identifier;
             case TokenType.Number:
                 return { kind: "NumericLiteral", value : parseFloat(this.eat().value) } as NumericLiteral;
+            case TokenType.OpenParen: {
+                this.eat();
+                const value = this.parse_expr();
+                this.expect(TokenType.CloseParen, "Hong tìm thấy ngoặc đóng");
+                return value;
+            }
             default: 
                 console.error("Từ gì lạ zậy, compiler hong hiểu", this.at().value);
                 process.exit();
