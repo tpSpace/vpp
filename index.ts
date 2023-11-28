@@ -9,7 +9,10 @@ async function repl() {
             process.exit();
         }
         const program = parser.produceAST(input);
-        console.log(JSON.stringify(program));
+        // console.log(JSON.stringify(program));
+        for (let [key, value] of Object.entries(program)) {
+            console.log(key, value);
+        }
     }
 
 }

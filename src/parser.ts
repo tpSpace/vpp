@@ -37,8 +37,9 @@ export default class Parser {
                 right,
                 operator,
             } as BinaryExpr;
-            
+            // console.log(left, "\n===================");
         }
+        
         return left;
     }
 
