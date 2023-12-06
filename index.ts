@@ -1,4 +1,5 @@
 import Parser from './src/frontend/parser.ts';
+import { evaluate } from './src/runtime/interpreter.ts';
 
 async function repl() {
     const parser = new Parser();
@@ -10,9 +11,12 @@ async function repl() {
         }
         const program = parser.produceAST(input);
         // console.log(JSON.stringify(program));
-        for (let [key, value] of Object.entries(program)) {
-            console.log(key, value);
-        }
+        // for (let [key, value] of Object.entries(program)) {
+        //     console.log(key, value);
+        // }
+        const result = evaluate(program);
+        console.log(result);
+        console.log("------------\n\n");
     }
 
 }
