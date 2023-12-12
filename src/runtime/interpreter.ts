@@ -1,11 +1,12 @@
 import { NumberVal, ValueType, RuntimeVal, NullVal } from './values.ts'
-import { BinaryExpr, NodeType, NumericLiteral, Program, Stmt } from '../frontend/ast.ts'
-
-function evaluate_program(program: Program): RuntimeVal {
+import { BinaryExpr, Identifier, NodeType, NumericLiteral, Program, Stmt } from '../frontend/ast.ts'
+import Environment from './environtment.ts';
+// what happened on Dec 3rd 
+function evaluate_program(program: Program, env: Environment): RuntimeVal {
     let lastEvaluated: RuntimeVal = { type: "null", value: "null" } as NullVal;
 
     for (const statement of program.body) {
-        lastEvaluated = evaluate(statement);
+        lastEvaluated = evaluate(statement, env);
     }
 
     return lastEvaluated;
@@ -38,10 +39,10 @@ function evaluate_numeric_binary_expr(leftHandSide: NumberVal, rightHandSide: Nu
     } as NumberVal;
 }
 
-function evaluate_binary_expr(binop: BinaryExpr): RuntimeVal {
+function evaluate_binary_expr(binop: BinaryExpr, env: Environment): RuntimeVal {
 
-    const leftHandSide = evaluate(binop.left);
-    const rightHandSide = evaluate(binop.right);
+    const leftHandSide = evaluate(binop.left, env);
+    const rightHandSide = evaluate(binop.right, env);
 
     if (leftHandSide.type !== rightHandSide.type) {
         console.error("Type mismatch");
@@ -54,7 +55,7 @@ function evaluate_binary_expr(binop: BinaryExpr): RuntimeVal {
     return { type: "null", value: "null" } as NullVal;
 }   
 
-export function evaluate(astNode: Stmt): RuntimeVal {
+export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
     switch (astNode.kind) {
         case "NumericLiteral":
             return {
@@ -66,13 +67,21 @@ export function evaluate(astNode: Stmt): RuntimeVal {
             return { value: "null", type: "null" } as NullVal;
 
         case "BinaryExpr":
-            return evaluate_binary_expr(astNode as BinaryExpr);
+            return evaluate_binary_expr(astNode as BinaryExpr, env);
 
         case "Program":
-            return evaluate_program(astNode as Program);
+            return evaluate_program(astNode as Program, env);
+            
+        case "Identifier":
+            return evaluate_identifier(astNode as Identifier, env);
 
         default:
             console.error("Unknown AST node kind: ", astNode);
             process.exit();
     }
+}
+
+function evaluate_identifier(ident: Identifier, env: Environment): RuntimeVal {
+    const value = env.lookupVar(ident.symbol);
+    return value;
 }
