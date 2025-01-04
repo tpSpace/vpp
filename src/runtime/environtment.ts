@@ -31,7 +31,7 @@ export default class Environment {
                return this;
           }
           if (this.parent === undefined) {
-               throw new Error(`Biến này ${varname} chưa được khai báo`);
+               throw (`Biến ${varname} này chưa được khai báo`);
           }
           return this.parent.resolve(varname);
      }

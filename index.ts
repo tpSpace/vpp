@@ -14,10 +14,10 @@ async function repl() {
             process.exit();
         }
         const program = parser.produceAST(input);
-        // console.log(JSON.stringify(program));
-        // for (let [key, value] of Object.entries(program)) {
-        //     console.log(key, value);
-        // }
+        console.log(JSON.stringify(program));
+        for (let [key, value] of Object.entries(program)) {
+            console.log(key, value);
+        }
         const result = evaluate(program, env);
         console.log(result);
     }
